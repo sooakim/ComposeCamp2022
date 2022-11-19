@@ -50,16 +50,15 @@ fun BottomNavItem(
 
     BaseNavItem(
         icon,
-        text,
-        animationProgress
-    )
+        text
+    ) { animationProgress }
 }
 
 @Composable
 fun BaseNavItem(
     icon: @Composable BoxScope.() -> Unit,
     text: @Composable BoxScope.() -> Unit,
-    @FloatRange(from = 0.0, to = 1.0) animationProgress: Float
+    @FloatRange(from = 0.0, to = 1.0) animationProgress: () -> Float
 ) {
     Layout(
         content = {
@@ -91,17 +90,18 @@ fun MeasureScope.measure(
     iconPlaceable: Placeable,
     width: Int,
     height: Int,
-    @FloatRange(from = 0.0, to = 1.0) animationProgress: Float
+    @FloatRange(from = 0.0, to = 1.0) animationProgress: () -> Float
 ): MeasureResult {
+    val progress = animationProgress()
     val iconY = (height - iconPlaceable.height) / 2
     val textY = (height - textPlaceable.height) / 2
-    val textWidth = textPlaceable.width * animationProgress
+    val textWidth = textPlaceable.width * progress
     val iconX = (width - textWidth - iconPlaceable.width) / 2
     val textX = iconX + iconPlaceable.width
 
     return layout(width, height) {
         iconPlaceable.placeRelative(iconX.toInt(), iconY)
-        if (animationProgress != 0f) {
+        if (animationProgress() != 0f) {
             textPlaceable.placeRelative(textX.toInt(), textY)
         }
     }
