@@ -1,9 +1,18 @@
 package com.example.android.codelab.animation
 
+import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -16,13 +25,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.constrain
+import androidx.compose.ui.unit.dp
 import com.example.android.codelab.animation.ui.AnimationCodelabTheme
+import kotlin.math.roundToInt
 
 @Composable
 fun BottomNavItem(
@@ -155,7 +169,57 @@ fun CustomColumn(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
+@Composable
+fun BoxPreview() {
+    AnimationCodelabTheme {
+        Box{
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize()
+                    .size(50.dp)
+                    .background(Color.Blue)
+            )
+            Box(
+                modifier = Modifier
+                    .layout { measurable, constraints ->
+                        val width = 50.dp
+                        val height = 50.dp
+                        val widthPx = width.roundToPx()
+                        val heightPx = height.roundToPx()
+                        val newConstraints = constraints.copy(
+                            minWidth = widthPx, maxWidth = widthPx,
+                            minHeight = heightPx, maxHeight = heightPx
+                        )
+                        val placeable = measurable.measure(newConstraints)
+                        layout(widthPx, heightPx){
+                            val x = constraints.maxWidth.toFloat() / 2 - width.toPx() / 2
+                            val y = constraints.maxHeight.toFloat() / 2 - height.toPx() / 2
+                            placeable.placeRelative(x.roundToInt(), y.roundToInt())
+                        }
+                    }
+                    .background(Color.Red)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenuPreview() {
+    AnimationCodelabTheme {
+        Column(Modifier.width(IntrinsicSize.Max)) {
+            Text("Refresh", Modifier.fillMaxWidth())
+            Text("Hello World", Modifier.fillMaxWidth())
+            Text("Kotlin", Modifier.fillMaxWidth())
+            Text("Java", Modifier.fillMaxWidth())
+            Text("American Express", Modifier.fillMaxWidth())
+        }
+    }
+}
+
+@Preview(showBackground = true)
 @Composable
 fun BottomNavItemPreview() {
     AnimationCodelabTheme {
@@ -182,7 +246,7 @@ fun BottomNavItemPreview() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun VerticalGridPreview() {
     AnimationCodelabTheme {
@@ -198,7 +262,7 @@ fun VerticalGridPreview() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun CustomColumnPreview() {
     AnimationCodelabTheme {
